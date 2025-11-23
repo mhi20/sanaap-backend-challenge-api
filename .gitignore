@@ -1,0 +1,13 @@
+.idea
+.idea/*
+
+.venv
+.venv/*
+
+!logs/.keep
+
+staticfiles/*
+!staticfiles/.keep
+
+deployments/development/.env
+!deployments/development/.env.sample
