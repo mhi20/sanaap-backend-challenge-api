@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
+from datetime import timedelta
 from os import environ
 from pathlib import Path
 
@@ -124,25 +125,50 @@ REDIS_PORT = environ['REDIS_PORT']
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': environ['DB_NAME'],
-        'USER': environ['POSTGRES_USER'],
-        'PASSWORD': environ['POSTGRES_PASSWORD'],
-        'HOST': environ['DB_HOST'],
-        'PORT': environ['DB_PORT'],
-    },
-}
+# Use separate test database when running tests
+if TESTING:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': environ.get('DB_TEST_NAME', 'test_db'),
+            'USER': environ.get('POSTGRES_TEST_USER', 'postgres_test_user'),
+            'PASSWORD': environ.get('POSTGRES_TEST_PASSWORD', 'postgres_test_password'),
+            'HOST': environ.get('DB_TEST_HOST', 'localhost'),
+            'PORT': environ.get('DB_TEST_PORT', '5432'),
+            'TEST': {
+                'NAME': None,
+            },
+        },
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': environ['DB_NAME'],
+            'USER': environ['POSTGRES_USER'],
+            'PASSWORD': environ['POSTGRES_PASSWORD'],
+            'HOST': environ['DB_HOST'],
+            'PORT': environ['DB_PORT'],
+        },
+    }
 
 
 # ------ Cache ----- #
-CACHES = {
-    "default": {
-        "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": f"redis://{REDIS_HOST}:{REDIS_PORT}",
+# Use in-memory cache for tests to avoid affecting Redis
+if TESTING:
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+            "LOCATION": "test-cache",
+        }
     }
-}
+else:
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.redis.RedisCache",
+            "LOCATION": f"redis://{REDIS_HOST}:{REDIS_PORT}",
+        }
+    }
 # ------ End Cache ----- #
 
 
