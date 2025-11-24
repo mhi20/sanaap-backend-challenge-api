@@ -126,31 +126,20 @@ REDIS_PORT = environ['REDIS_PORT']
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 # Use separate test database when running tests
-if TESTING:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': environ.get('DB_TEST_NAME', 'test_db'),
-            'USER': environ.get('POSTGRES_TEST_USER', 'postgres_test_user'),
-            'PASSWORD': environ.get('POSTGRES_TEST_PASSWORD', 'postgres_test_password'),
-            'HOST': environ.get('DB_TEST_HOST', 'localhost'),
-            'PORT': environ.get('DB_TEST_PORT', '5432'),
-            'TEST': {
-                'NAME': None,
-            },
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': environ['DB_NAME'],
+        'USER': environ['POSTGRES_USER'],
+        'PASSWORD': environ['POSTGRES_PASSWORD'],
+        'HOST': environ['DB_HOST'],
+        'PORT': environ['DB_PORT'],
+        'TEST': {
+            'NAME': None,
         },
     }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': environ['DB_NAME'],
-            'USER': environ['POSTGRES_USER'],
-            'PASSWORD': environ['POSTGRES_PASSWORD'],
-            'HOST': environ['DB_HOST'],
-            'PORT': environ['DB_PORT'],
-        },
-    }
+}
 
 
 # ------ Cache ----- #
