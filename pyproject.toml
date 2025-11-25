@@ -13,5 +13,6 @@ dependencies = [
     "drf-spectacular>=0.29.0",
     "gunicorn>=23.0.0",
     "psycopg2-binary>=2.9.11",
+    "redis>=7.1.0",
     "uvicorn[standard]>=0.38.0",
 ]
