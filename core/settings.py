@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'storages',
     'rest_framework',
     'drf_spectacular',
     'django_filters',
@@ -75,13 +76,26 @@ REST_FRAMEWORK = {
     'VERSION_PARAM': 'version',
 }
 
+STORAGES = {
+    "default": {
+        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+        "OPTIONS": {
+            "bucket_name": environ["AWS_STORAGE_BUCKET_NAME"],
+            "location": "uploads",
+            "default_acl": "public-read",
+        },
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
+
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'Your Project API',
-    'DESCRIPTION': 'Your project description',
+    'TITLE': 'Sanaap Project API',
+    'DESCRIPTION': 'Description',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
     'SCHEMA_PATH_PREFIX': '/api/v1',
-    'COMPONENT_SPLIT_REQUEST': True,
 }
 
 SIMPLE_JWT = {
@@ -163,7 +177,6 @@ else:
 
 
 # _____ S3 _____ #
-DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 AWS_ACCESS_KEY_ID = environ["AWS_ACCESS_KEY_ID"]
 AWS_SECRET_ACCESS_KEY = environ["AWS_SECRET_ACCESS_KEY"]
 AWS_STORAGE_BUCKET_NAME = environ["AWS_STORAGE_BUCKET_NAME"]
@@ -173,7 +186,7 @@ AWS_S3_USE_SSL = False
 AWS_S3_VERIFY = False
 AWS_QUERYSTRING_AUTH= False
 AWS_DEFAULT_ACL = 'public-read'
-AWS_LOCATION = "uploads"
+AWS_S3_ADDRESSING_STYLE="path"
 AWS_S3_URL_PROTOCOL= 'http:'
 AWS_S3_DOMAIN = environ["AWS_S3_DOMAIN"]
 AWS_S3_CUSTOM_DOMAIN = f"{AWS_S3_DOMAIN}/{AWS_STORAGE_BUCKET_NAME}"
